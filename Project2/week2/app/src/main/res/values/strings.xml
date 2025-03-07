@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">week2</string>
+    <string name="linear_layout">Linear Layout</string>
+    <string name="table_layout">Table Layout</string>
+    <string name="constraint_layout">Constraint Layout</string>
+    <string name="grid_layout">Grid Layout</string>
+    <string name="relative_layout">Relative Layout</string>
+    <string name="frame_layout">Frame Layout</string>
+</resources>
