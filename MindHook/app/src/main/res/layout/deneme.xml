@@ -1,0 +1,146 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- Button to Add Reminder -->
+    <Button
+        android:id="@+id/btnAddReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Test Reminder"
+        android:layout_gravity="center_horizontal"
+        android:marginBottom="16dp"/>
+
+    <!-- Reminder List (Placeholder for the dynamic reminders) -->
+    <LinearLayout
+        android:id="@+id/reminderListContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:divider="@android:color/darker_gray"
+        android:dividerPadding="8dp"
+        android:showDividers="middle">
+
+        <!-- Sample Reminder Entry 1 -->
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvReminderTitle1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="su ic"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvReminderTime1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2025-04-07 11:05:45"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray" />
+        </LinearLayout>
+
+        <!-- Sample Reminder Entry 2 -->
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvReminderTitle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="yemek ye"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvReminderTime2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2025-04-07 11:06:53"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray" />
+        </LinearLayout>
+
+        <!-- Sample Reminder Entry 3 -->
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvReminderTitle3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="deneme 3"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvReminderTime3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2025-04-07 11:07:04"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray" />
+        </LinearLayout>
+
+        <!-- Sample Reminder Entry 4 -->
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvReminderTitle4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="denemeee"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvReminderTime4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2025-04-07 11:07:38"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray" />
+        </LinearLayout>
+
+        <!-- Sample Reminder Entry 5 -->
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvReminderTitle5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reminder 5"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvReminderTime5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2025-04-07 11:08:02"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
