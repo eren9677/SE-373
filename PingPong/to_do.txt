@@ -1,0 +1,363 @@
+Playing Ping Pong
+
+In this project, we will develop a ping pong game. We will use  GameView extending SurfaceView Create a new project. To implement the game we will draw a ball and paddle on canvas
+
+Ball Logic + Paddle Movement
+Move the ball and bounce off walls.
+Add paddle movement using touch events
+
+Collision + Game Over + Score
+Detect ball-paddle collision
+Add score counter
+Reset game or show Game Over on miss
+
+Possible extensions:
+Add multiple difficulty levels
+Add a second ball after 10 points
+
+Tools/Concepts We'll Learn:
+Canvas drawing
+Game loop & surface callbacks
+Collision detection
+Touch controls
+
+Why use Float f in Android games?
+Better performance: Float takes less memory and is faster to compute than Double, especially on mobile CPUs.
+Most Canvas drawing functions (drawCircle, drawRect, etc.) use Float parameters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Starter Game Mechanics (Basic Physics):
+// Ball position
+var ballX = 100f
+var ballY = 100f
+var ballRadius = 20f
+var velocityX = 10f
+var velocityY = 10f
+Ball update logic:
+ballX += velocityX
+ballY += velocityY
+
+// Bounce off walls
+if (ballX <= 0 || ballX >= width) velocityX *= -1
+if (ballY <= 0) velocityY *= -1
+
+// Check if ball hits paddle
+if (ballY + ballRadius >= paddleY && ballX in paddleX..(paddleX + paddleWidth)) {
+    velocityY *= -1
+    score++
+}
+
+// Game over
+if (ballY > height) {
+    gameRunning = false
+}
+
+
+1. Create the Android Project
+➤ Open Android Studio and create a new project:
+Template: Empty Views Activity
+Name: 
+
+After the project is created, go to MainActivity.kt.
+
+2. Create the GameView (Canvas-based)
+We'll create a custom view to draw the game elements.
+
+➤ Create a new Kotlin class:
+GameView.kt
+
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.view.SurfaceHolder
+import android.view.SurfaceView
+
+class GameView(context: Context) : SurfaceView(context), Runnable {
+
+    private val thread = Thread(this)
+    private var isPlaying = true
+    private val paint = Paint()
+    
+    private var ballX = 100f
+    private var ballY = 100f
+    private var velocityX = 10f
+    private var velocityY = 10f
+    private val ballRadius = 20f
+
+    init {
+        paint.color = Color.RED
+        thread.start()
+    }
+
+    override fun run() {
+        while (isPlaying) {
+            if (holder.surface.isValid) {
+                val canvas = holder.lockCanvas()
+                update()
+                drawGame(canvas)
+                holder.unlockCanvasAndPost(canvas)
+            }
+
+            Thread.sleep(16) // ~60 FPS
+        }
+    }
+    private fun update() { //  updating the ball's position on the screen every frame.
+        ballX += velocityX
+        ballY += velocityY
+
+        // Bounce off screen edges
+        if (ballX <= 0 || ballX >= width) velocityX *= -1
+        if (ballY <= 0 || ballY >= height) velocityY *= -1
+    }
+
+    private fun drawGame(canvas: Canvas) {
+        canvas.drawColor(Color.BLACK)
+        canvas.drawCircle(ballX, ballY, ballRadius, paint)
+    }
+}
+
+
+
+
+3. Update MainActivity to Show the GameView
+MainActivity.kt:
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val gameView = GameView(this)
+        setContentView(gameView)
+    }
+}
+
+At this point, you should see a red ball bouncing around the screen.
+
+4: Add the Paddle and Player Controls
+We'll:
+Add a paddle at the bottom of the screen
+Let the player control it with touch (drag to move)
+
+Update GameView.kt
+We'll modify your GameView class to include:
+Paddle properties
+Paddle drawing
+Touch input to move paddle
+
+🔁 Replace your current GameView.kt with the following:
+
+package com.example.bouncegame
+
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.view.MotionEvent
+import android.view.SurfaceHolder
+import android.view.SurfaceView
+
+class GameView(context: Context) : SurfaceView(context), Runnable {
+
+    private val thread = Thread(this)
+    private var isPlaying = true
+    private val paint = Paint()
+    
+    // Ball properties
+    private var ballX = 100f
+    private var ballY = 100f
+    private var velocityX = 10f
+    private var velocityY = 10f
+    private val ballRadius = 20f
+
+    // Paddle properties
+    private var paddleX = 300f
+    private var paddleY = 0f  // initialized later
+    private val paddleWidth = 200f
+    private val paddleHeight = 30f
+
+    // New variables
+    private var score = 0
+    private var isGameOver = false
+    private var maxSpeed = 35f
+
+    init {
+        paint.color = Color.RED
+        thread.start()
+    }
+
+    override fun run() {
+        while (isPlaying) {
+            if (holder.surface.isValid) {
+                val canvas = holder.lockCanvas()
+                update()
+                drawGame(canvas)
+                holder.unlockCanvasAndPost(canvas)
+            }
+            Thread.sleep(16)
+        }
+    }
+
+    private fun update() {
+        if (!isGameOver) {
+            ballX += velocityX
+            ballY += velocityY
+
+            // Bounce off walls
+            if (ballX <= 0 || ballX >= width) velocityX *= -1
+            if (ballY <= 0) velocityY *= -1
+
+            // Check paddle collision
+            if (ballY + ballRadius >= paddleY &&
+                ballX >= paddleX && ballX <= paddleX + paddleWidth
+            ) {
+                velocityY *= -1
+                ballY = paddleY - ballRadius
+                score++
+                // Increase speed, cap at maxSpeed
+                velocityX = (if (velocityX > 0) (velocityX * 1.05f) else (velocityX * 1.05f)).coerceIn(-maxSpeed, maxSpeed)
+                velocityY = (if (velocityY > 0) (velocityY * 1.1f) else (velocityY * 1.1f)).coerceIn(-maxSpeed, maxSpeed)
+            }
+
+            // Game Over logic
+            if (ballY > height) {
+                isGameOver = true
+            }
+        }
+    }
+
+    private fun drawGame(canvas: Canvas) {
+        // Set paddle Y based on screen height
+        if (paddleY == 0f) paddleY = height - 150f
+
+        canvas.drawColor(Color.BLACK)
+
+        // Draw ball
+        paint.color = Color.RED
+        canvas.drawCircle(ballX, ballY, ballRadius, paint)
+
+        // Draw paddle
+        paint.color = Color.WHITE
+        canvas.drawRect(paddleX, paddleY, paddleX + paddleWidth, paddleY + paddleHeight, paint)
+
+        // Draw score
+        paint.color = Color.YELLOW
+        paint.textSize = 60f
+        canvas.drawText("Score: $score", 50f, 100f, paint)
+        // Draw Game Over
+        if (isGameOver) {
+            paint.color = Color.WHITE
+            paint.textSize = 100f
+            canvas.drawText("Game Over", width / 4f, height / 2f, paint)
+            paint.textSize = 60f
+            canvas.drawText("Tap to Restart", width / 4f, height / 2f + 100f, paint)
+        }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isGameOver && event.action == MotionEvent.ACTION_DOWN) {
+            restartGame()
+            return true
+        }
+        if (event.action == MotionEvent.ACTION_MOVE) {
+            // Center paddle on touch X
+            paddleX = event.x - paddleWidth / 2
+
+            // Keep paddle within screen bounds
+            if (paddleX < 0) paddleX = 0f
+            if (paddleX + paddleWidth > width) paddleX = width - paddleWidth
+        }
+        return true
+    }
+
+    private fun restartGame() {
+        ballX = width / 2f
+        ballY = height / 2f
+        velocityX = 10f
+        velocityY = -10f
+        score = 0
+        isGameOver = false
+    }
+}
+
+What's new here:
+A white paddle drawn at the bottom.
+You can move it left/right with your mouse.
+Ball bounces off the paddle.
+If the ball misses the paddle (falls below screen), it resets.
+
+
+ASSIGNMENT Add Score, Game Over, and Restart
+Add:
+A score counter (increases when ball hits paddle)
+A Game Over state (when ball misses paddle)
+Tap to restart the game after Game Over
+
+
+
+Update your GameView.kt:
+
+
+Modify the update() function:
+
+
+Modify the drawGame() function:
+
+
+Update onTouchEvent() for Restart and Paddle Control:
+
+
+Add a restartGame() function:
+
+
+
+After this is all completed take screen captures of your emulator illustrating different features of your game.
+
+Now, 
+Increase speed slightly after each paddle bounce → make the game harder over time.
+Cap the maximum speed to avoid becoming unplayable.
+Paste the code associated with how you increased the speed and cap the max speed with these features highlighted.
+
+# Ball Speed Increase and Max Speed Cap Logic
+
+Below is the code that increases the ball's speed after each paddle bounce and caps the maximum speed. This logic is found in the `update()` function of `GameView.kt`:
+
+```kotlin
+// Inside update() function, in the paddle collision check:
+if (ballY + ballRadius >= paddleY &&
+    ballX >= paddleX && ballX <= paddleX + paddleWidth
+) {
+    velocityY *= -1
+    ballY = paddleY - ballRadius
+    score++
+    // Increase speed, cap at maxSpeed
+    velocityX = (if (velocityX > 0) (velocityX * 1.05f) else (velocityX * 1.05f)).coerceIn(-maxSpeed, maxSpeed)
+    velocityY = (if (velocityY > 0) (velocityY * 1.1f) else (velocityY * 1.1f)).coerceIn(-maxSpeed, maxSpeed)
+}
+
+// The maxSpeed variable is defined at the top of the class:
+private val maxSpeed = 35f
+```
+
+**Key features:**
+- `velocityX` and `velocityY` are multiplied by a factor (>1) after each paddle bounce to increase speed.
+- The `.coerceIn(-maxSpeed, maxSpeed)` function ensures the speed never exceeds the set maximum in either direction.
+- `maxSpeed` is a constant that you can adjust to control the game's difficulty ceiling.
